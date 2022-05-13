@@ -3,7 +3,7 @@ const req = require('express/lib/request')
 const res = require('express/lib/response')
 const app = express()
 const morgan = require("morgan")
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 const cors = require("cors")
 
 let persons = [
