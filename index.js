@@ -2,6 +2,7 @@ const express = require('express')
 const req = require('express/lib/request')
 const res = require('express/lib/response')
 const app = express()
+const morgan = require("morgan")
 const PORT = 3001
 
 
@@ -31,6 +32,8 @@ let persons = [
 const getRand = () => Math.floor(Math.random() * 10000)
 
 app.use(express.json())
+
+app.use(morgan("tiny"))
 
 app.get("/api/persons", (req, res) => {
     res.json(persons)
