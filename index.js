@@ -31,6 +31,7 @@ app.use(
     })
 )
 
+// get all people
 app.get("/api/persons", (req, res) => {
     Person.find({}).then(p =>{
         console.log(p)
@@ -38,12 +39,14 @@ app.get("/api/persons", (req, res) => {
     })
 })
 
+// returns contact count + date
 app.get("/info", (req, res) => {
     res.write("<p>Phonebook has info for " + persons.length + " people</p>")
     res.write(Date())
     res.send()
 })
 
+// return person on id
 app.get("/api/persons/:id", (req, res) => {
     const id = Number(req.params.id)
     const person = persons.find(p => p.id === id)
@@ -55,6 +58,7 @@ app.get("/api/persons/:id", (req, res) => {
     }
 })
 
+// delete person
 app.delete("/api/persons/:id", (req, res) => {
     const id = Number(req.params.id)
     persons = persons.filter(p => p.id !== id)
@@ -62,7 +66,7 @@ app.delete("/api/persons/:id", (req, res) => {
     res.status(204).end()
 })
 
-
+// new person
 app.post("/api/persons", (req, res) => {
     console.log(req.body)
 
@@ -74,21 +78,17 @@ app.post("/api/persons", (req, res) => {
         })
     }
 
-    if (!content.name || !content.number) {
-        return res.status(400).json({
-            error: "content missing values"
-        })
-    }
+    
 
-    if (persons.find(p => p.name === content.name)) {
-        return res.status(400).json({
-            error: "name must be unique"
-        })
-    }
+    const newPerson = new NodeIterator({
+        name: content.name,
+        number: content.number,
+        id: getRand()
+    })
 
-    const newPerson = { ...req.body, id: getRand() }
-    persons = persons.concat(newPerson)
-    res.json(newPerson)
+    newPerson.save().then(person =>{
+        response.json(person)
+    })
 
 })
 
