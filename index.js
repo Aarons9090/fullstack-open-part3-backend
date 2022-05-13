@@ -4,7 +4,7 @@ const res = require('express/lib/response')
 const app = express()
 const morgan = require("morgan")
 const PORT = 3001
-
+const cors = require("cors")
 
 let persons = [
     {
@@ -32,7 +32,7 @@ let persons = [
 const getRand = () => Math.floor(Math.random() * 10000)
 
 app.use(express.json())
-
+app.use(cors())
 // morgan custom format
 app.use(
     morgan(function (tokens, req, res) {
@@ -110,3 +110,10 @@ app.post("/api/persons", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
+
+const unknownMethod = (request, response) => {
+    response.status(404).send({ error: 'unknown method' })
+  }
+  
+  app.use(unknownMethod)
