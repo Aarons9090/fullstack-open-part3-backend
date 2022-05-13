@@ -10,7 +10,6 @@ const PORT = process.env.PORT
 const cors = require("cors")
 
 
-
 const getRand = () => Math.floor(Math.random() * 10000)
 
 app.use(express.json())
