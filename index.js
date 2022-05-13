@@ -71,11 +71,11 @@ app.post("/api/persons", (req, res) => {
 
     const content = req.body
 
-    // if (!content) {
-    //     return res.status(400).json({
-    //         error: "no content"
-    //     })
-    // }
+    if (content.name === "" && content.number === "") {
+        return res.status(400).json({
+            error: "no content"
+        })
+    }
 
     const newPerson = new Person({
         name: content.name,
