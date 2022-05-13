@@ -32,28 +32,28 @@ const getRand = () => Math.floor(Math.random() * 10000)
 
 app.use(express.json())
 
-app.get("/api/persons", (req, res) =>{
+app.get("/api/persons", (req, res) => {
     res.json(persons)
 })
 
-app.get("/info", (req, res) =>{
+app.get("/info", (req, res) => {
     res.write("<p>Phonebook has info for " + persons.length + " people</p>")
     res.write(Date())
     res.send()
 })
 
-app.get("/api/persons/:id", (req, res) =>{
+app.get("/api/persons/:id", (req, res) => {
     const id = Number(req.params.id)
     const person = persons.find(p => p.id === id)
 
-    if(person){
+    if (person) {
         res.json(person)
-    }else{
+    } else {
         res.status(404).end()
     }
 })
 
-app.delete("/api/persons/:id", (req,res)=>{
+app.delete("/api/persons/:id", (req, res) => {
     const id = Number(req.params.id)
     persons = persons.filter(p => p.id !== id)
 
@@ -61,21 +61,36 @@ app.delete("/api/persons/:id", (req,res)=>{
 })
 
 
-app.post("/api/persons", (req,res) =>{
+app.post("/api/persons", (req, res) => {
     console.log(req.body)
-    
-    if(req.body.content){
-        const newPerson = {...req.body, id: getRand()}
-        persons = persons.concat(newPerson)
-        res.json(newPerson)
-    }else{
+
+    const content = req.body
+
+    if (!content) {
         return res.status(400).json({
-            error: "content missing"
+            error: "no content"
         })
     }
+
+    if (!content.name || !content.number) {
+        return res.status(400).json({
+            error: "content missing values"
+        })
+    }
+
+    if (persons.find(p => p.name === content.name)) {
+        return res.status(400).json({
+            error: "name must be unique"
+        })
+    }
+
+    const newPerson = { ...req.body, id: getRand() }
+    persons = persons.concat(newPerson)
+    res.json(newPerson)
+
 })
 
 
-app.listen(PORT, () =>{
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
