@@ -1,33 +1,15 @@
 const express = require('express')
 const req = require('express/lib/request')
 const res = require('express/lib/response')
+const Person = require("./models/person")
+require('dotenv').config()
+
 const app = express()
 const morgan = require("morgan")
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 const cors = require("cors")
 
-let persons = [
-    {
-        id: 1,
-        name: "Arto Hellas",
-        number: "040-123456"
-    },
-    {
-        id: 2,
-        name: "Ada Lovelace",
-        number: "040-1241234"
-    },
-    {
-        id: 3,
-        name: "Mikael Ojanperä",
-        number: "030-118911"
-    },
-    {
-        id: 4,
-        name: "Tommi Korpi",
-        number: "331-11131231"
-    },
-]
+
 
 const getRand = () => Math.floor(Math.random() * 10000)
 
@@ -51,7 +33,9 @@ app.use(
 )
 
 app.get("/api/persons", (req, res) => {
-    res.json(persons)
+    Person.find({}).then(p =>{
+        res.json(p)
+    })
 })
 
 app.get("/info", (req, res) => {
