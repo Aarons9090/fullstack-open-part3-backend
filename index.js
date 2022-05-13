@@ -80,7 +80,7 @@ app.post("/api/persons", (req, res) => {
 
     
 
-    const newPerson = new NodeIterator({
+    const newPerson = new Person({
         name: content.name,
         number: content.number,
         id: getRand()
