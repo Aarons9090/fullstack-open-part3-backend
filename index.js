@@ -8,9 +8,8 @@ const app = express()
 const morgan = require("morgan")
 const PORT = process.env.PORT
 const cors = require("cors")
-
-
 const getRand = () => Math.floor(Math.random() * 10000)
+
 
 app.use(express.json())
 app.use(cors())
@@ -33,7 +32,7 @@ app.use(
 
 // get all people
 app.get("/api/persons", (req, res) => {
-    Person.find({}).then(p =>{
+    Person.find({}).then(p => {
         console.log(p)
         res.json(p)
     })
@@ -59,11 +58,11 @@ app.get("/api/persons/:id", (req, res) => {
 })
 
 // delete person
-app.delete("/api/persons/:id", (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(p => p.id !== id)
-
-    res.status(204).end()
+app.delete("/api/persons/:id", (req, res, next) => {
+    Person.findByIdAndRemove(req.params.id).then(p => {
+        res.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 // new person
@@ -72,13 +71,11 @@ app.post("/api/persons", (req, res) => {
 
     const content = req.body
 
-    if (!content) {
-        return res.status(400).json({
-            error: "no content"
-        })
-    }
-
-    
+    // if (!content) {
+    //     return res.status(400).json({
+    //         error: "no content"
+    //     })
+    // }
 
     const newPerson = new Person({
         name: content.name,
@@ -86,7 +83,7 @@ app.post("/api/persons", (req, res) => {
         id: getRand()
     })
 
-    newPerson.save().then(person =>{
+    newPerson.save().then(person => {
         res.json(person)
     })
 
@@ -100,6 +97,14 @@ app.listen(PORT, () => {
 
 const unknownMethod = (request, response) => {
     response.status(404).send({ error: 'unknown method' })
-  }
-  
-  app.use(unknownMethod)
+}
+
+app.use(unknownMethod)
+
+const errorHandler = (error, req, res, next) =>{
+    if(error.name === "CastError"){
+        return res.status(400).send({error: "unknown id"})
+    }
+}
+
+app.use(errorHandler)
