@@ -1,4 +1,5 @@
 const express = require('express')
+const req = require('express/lib/request')
 const res = require('express/lib/response')
 const app = express()
 const PORT = 3001
@@ -26,6 +27,8 @@ let persons = [
         number: "331-11131231"
     },
 ]
+
+const getRand = () => Math.floor(Math.random() * 10000)
 
 app.use(express.json())
 
@@ -55,6 +58,21 @@ app.delete("/api/persons/:id", (req,res)=>{
     persons = persons.filter(p => p.id !== id)
 
     res.status(204).end()
+})
+
+
+app.post("/api/persons", (req,res) =>{
+    console.log(req.body)
+    
+    if(req.body.content){
+        const newPerson = {...req.body, id: getRand()}
+        persons = persons.concat(newPerson)
+        res.json(newPerson)
+    }else{
+        return res.status(400).json({
+            error: "content missing"
+        })
+    }
 })
 
 
