@@ -15,11 +15,7 @@ const getRand = () => Math.floor(Math.random() * 10000)
 
 mongoose.connect(url)
 
-const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
-    id: Number,
-})
+
 
 const Person = mongoose.model('Person', personSchema)
 

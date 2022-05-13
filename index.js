@@ -34,6 +34,7 @@ app.use(
 
 app.get("/api/persons", (req, res) => {
     Person.find({}).then(p =>{
+        console.log(p)
         res.json(p)
     })
 })
