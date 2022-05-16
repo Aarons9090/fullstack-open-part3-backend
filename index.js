@@ -1,8 +1,6 @@
-const express = require('express')
-const req = require('express/lib/request')
-const res = require('express/lib/response')
+const express = require("express")
 const Person = require("./models/person")
-require('dotenv').config()
+require("dotenv").config()
 
 const app = express()
 const morgan = require("morgan")
@@ -23,10 +21,10 @@ app.use(
             tokens.method(req, res),
             tokens.url(req, res),
             tokens.status(req, res),
-            tokens.res(req, res, 'content-length'), '-',
-            tokens['response-time'](req, res), 'ms',
+            tokens.res(req, res, "content-length"), "-",
+            tokens["response-time"](req, res), "ms",
             tokens.method(req) === "POST" ? JSON.stringify(req.body) : ""
-        ].join(' ')
+        ].join(" ")
     })
 )
 
@@ -40,28 +38,27 @@ app.get("/api/persons", (req, res) => {
 
 // returns contact count + date
 app.get("/info", (req, res) => {
-    res.write("<p>Phonebook has info for " + persons.length + " people</p>")
+    res.write("<p>Phonebook has info for " + Person.length + " people</p>")
     res.write(Date())
     res.send()
 })
 
 // return person on id
-app.get("/api/persons/:id", (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(p => p.id === id)
-
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+app.get("/api/persons/:id", (req, res, next) => {
+    console.log(req.params)
+    Person.findById(req.params.id)
+        .then(person => {
+            res.json(person)
+        })
+        .catch(error => next(error))
 })
 
 // delete person
 app.delete("/api/persons/:id", (req, res, next) => {
-    Person.findByIdAndRemove(req.params.id).then(p => {
-        res.status(204).end()
-    })
+    Person.findByIdAndRemove(req.params.id)
+        .then(() => {
+            res.status(204).end()
+        })
         .catch(error => next(error))
 })
 
