@@ -103,6 +103,7 @@ const errorHandler = (error, req, res, next) =>{
         case "ValidationError": return res.status(400).json({error: error.message})
     }
     
+    next(error)
 }
 
 app.use(errorHandler)
