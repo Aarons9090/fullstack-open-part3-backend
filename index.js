@@ -66,16 +66,11 @@ app.delete("/api/persons/:id", (req, res, next) => {
 })
 
 // new person
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
     console.log(req.body)
 
     const content = req.body
 
-    if (content.name === "" && content.number === "") {
-        return res.status(400).json({
-            error: "no content"
-        })
-    }
 
     const newPerson = new Person({
         name: content.name,
@@ -86,6 +81,7 @@ app.post("/api/persons", (req, res) => {
     newPerson.save().then(person => {
         res.json(person)
     })
+    .catch(error => next(error))
 
 })
 
@@ -102,9 +98,11 @@ const unknownMethod = (request, response) => {
 app.use(unknownMethod)
 
 const errorHandler = (error, req, res, next) =>{
-    if(error.name === "CastError"){
-        return res.status(400).send({error: "unknown id"})
+    switch(error.name){
+        case "CastError": return res.status(400).send({error: "unknown id"})
+        case "ValidationError": return res.status(400).json({error: error.message})
     }
+    
 }
 
 app.use(errorHandler)
