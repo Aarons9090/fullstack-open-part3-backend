@@ -103,15 +103,15 @@ app.listen(PORT, () => {
 
 
 const unknownMethod = (request, response) => {
-    response.status(404).send({ error: 'unknown method' })
+    response.status(404).send({ error: "unknown method" })
 }
 
 app.use(unknownMethod)
 
 const errorHandler = (error, req, res, next) => {
     switch (error.name) {
-        case "CastError": return res.status(400).send({ error: error.message })
-        case "ValidationError": return res.status(400).json({ error: error.message })
+    case "CastError": return res.status(400).send({ error: error.message })
+    case "ValidationError": return res.status(400).json({ error: error.message })
     }
 
     next(error)
