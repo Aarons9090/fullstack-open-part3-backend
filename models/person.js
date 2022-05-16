@@ -19,6 +19,7 @@ const personSchema = new mongoose.Schema({
         required: true
     },
     number: {
+        type: String,
         required: true
     },
     id: Number,
