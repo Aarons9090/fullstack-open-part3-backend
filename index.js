@@ -6,7 +6,7 @@ const app = express()
 const morgan = require("morgan")
 const PORT = process.env.PORT
 const cors = require("cors")
-const getRand = () => Math.floor(Math.random() * 10000)
+//const getRand = () => Math.floor(Math.random() * 10000)
 
 
 app.use(express.json())
@@ -71,7 +71,6 @@ app.post("/api/persons", (req, res, next) => {
     const newPerson = new Person({
         name: content.name,
         number: content.number,
-        id: getRand()
     })
 
     newPerson.save().then(person => {
