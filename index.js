@@ -62,7 +62,7 @@ app.delete("/api/persons/:id", (req, res, next) => {
     Person.findByIdAndRemove(req.params.id).then(p => {
         res.status(204).end()
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 })
 
 // new person
@@ -70,7 +70,6 @@ app.post("/api/persons", (req, res, next) => {
     console.log(req.body)
 
     const content = req.body
-
 
     const newPerson = new Person({
         name: content.name,
@@ -81,8 +80,20 @@ app.post("/api/persons", (req, res, next) => {
     newPerson.save().then(person => {
         res.json(person)
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 
+})
+
+app.put("/api/persons/:id", (req, res, next) => {
+    const { name, number } = req.body
+
+    Person.findByIdAndUpdate(req.params.id,
+        { name, number },
+        { new: true, runValidators: true, context: "query" })
+        .then(updatedPerson => {
+            res.json(updatedPerson)
+        })
+        .catch(error => next(error))
 })
 
 
@@ -97,12 +108,12 @@ const unknownMethod = (request, response) => {
 
 app.use(unknownMethod)
 
-const errorHandler = (error, req, res, next) =>{
-    switch(error.name){
-        case "CastError": return res.status(400).send({error: "unknown id"})
-        case "ValidationError": return res.status(400).json({error: error.message})
+const errorHandler = (error, req, res, next) => {
+    switch (error.name) {
+        case "CastError": return res.status(400).send({ error: error.message })
+        case "ValidationError": return res.status(400).json({ error: error.message })
     }
-    
+
     next(error)
 }
 
